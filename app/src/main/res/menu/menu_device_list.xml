@@ -8,4 +8,11 @@
         android:title="scan devices"
         app:showAsAction="always" />
 
+    <item
+        android:icon="@drawable/ic_baseline_hearing"
+        android:id="@+id/menu_listen_devices"
+        android:title="scan devices"
+        app:showAsAction="always" />
+
+
 </menu>

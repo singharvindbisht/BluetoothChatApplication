@@ -5,12 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
+    android:id="@+id/message_layout"
     tools:context=".MainActivity">
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/base"
+        android:id="@+id/list_conversation"
         android:stackFromBottom="true" />
 
     <LinearLayout
@@ -22,25 +24,27 @@
         android:layout_alignParentStart="true"
         android:id="@+id/base">
 
-        <ImageButton
+        <TextView
             android:id="@+id/photoPickerButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_gravity="center_vertical"
-            android:background="@android:drawable/ic_menu_gallery" />
+            android:text="Offline"
+            android:layout_gravity="center_vertical" />
+<!--            android:background="@android:drawable/ic_menu_gallery" />-->
 
         <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="message here...."
-            android:id="@+id/enter_message"
+            android:hint="Message here..."
+            android:id="@+id/ed_enter_message"
+            android:textSize="20sp"
             android:layout_weight="1"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:id="@+id/sendButton"
+            android:id="@+id/btn_send_message"
             android:text="Send" />
     </LinearLayout>
 </RelativeLayout>

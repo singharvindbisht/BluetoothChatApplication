@@ -3,6 +3,7 @@ package com.example.bluetoothchat;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -10,12 +11,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Set;
@@ -26,14 +30,17 @@ public class DeviceListActivity extends AppCompatActivity {
     private ArrayAdapter adapterPairedDevices, adapterAvailableDevices;
     private BluetoothAdapter bluetoothAdapter;
     private ProgressBar progressScanDevices;
+    private Context context;
+    private Intent intent1;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_list);
-
+        context = this;
         init();
+        intent1 = getIntent();
     }
 
     public void init()
@@ -45,8 +52,56 @@ public class DeviceListActivity extends AppCompatActivity {
         adapterPairedDevices = new ArrayAdapter<String>(this, R.layout.device_list_item);
         adapterAvailableDevices = new ArrayAdapter<String>(this, R.layout.device_list_item);
 
+
         listAvailableDevices.setAdapter(adapterAvailableDevices);
         listPairDevices.setAdapter(adapterPairedDevices);
+
+//        setResult(Activity.RESULT_OK, intent);
+
+        listAvailableDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String info = ((TextView) view).getText().toString();
+
+                String address = info.substring(info.length() - 17);
+
+                Intent intent = new Intent();
+                intent.putExtra("deviceAddress", address);
+                Toast.makeText(context, "Address : "+address, Toast.LENGTH_SHORT).show();
+//                BluetoothClient client = new BluetoothClient(BluetoothAdapter.
+//                        getDefaultAdapter().
+//                        getRemoteDevice(address));
+//               client.start();
+
+                intent.putExtra("address", address);
+                intent.putExtra("call", "BluetoothClient");
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+
+//        R.id.menu_enabled_bluetooth
+
+        listPairDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                bluetoothAdapter.cancelDiscovery();
+
+                String info = ((TextView) view).getText().toString();
+                String address = info.substring(info.length() - 17);
+
+                Log.d("Address", address);
+                Intent intent = new Intent();
+                intent.putExtra("deviceAddress", address);
+                Toast.makeText(context, "Address : "+address, Toast.LENGTH_SHORT).show();
+                intent.putExtra("address", address);
+                intent.putExtra("call", "BluetoothClient");
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+
+
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Set<BluetoothDevice> pairedDevice = bluetoothAdapter.getBondedDevices();
         if(pairedDevice!=null && pairedDevice.size()>0){
@@ -100,6 +155,12 @@ public class DeviceListActivity extends AppCompatActivity {
                 scanDevice();
                 //Toast.makeText(this, "Scanning device selected", Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.menu_listen_devices:
+                Intent intent = new Intent();
+                intent.putExtra("call", "BluetoothServer");
+                setResult(RESULT_OK, intent);
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -115,6 +176,7 @@ public class DeviceListActivity extends AppCompatActivity {
         }
 
         bluetoothAdapter.startDiscovery();
+
     }
 
 }
